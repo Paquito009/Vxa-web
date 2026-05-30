@@ -58,7 +58,7 @@ export async function POST(request: Request) {
   // Free Resend accounts with onboarding@resend.dev can only deliver to the
   // account owner's email until a domain is verified. Override via RESEND_TO_EMAIL.
   const fromEmail =
-    process.env.RESEND_FROM_EMAIL?.trim() || "noreply@vxaagency.com";
+    process.env.RESEND_FROM_EMAIL?.trim() || "onboarding@resend.dev";
   const replyToEmail =
     process.env.RESEND_REPLY_TO_EMAIL?.trim() || "contacto@vxaagency.com";
 
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from: fromEmail,
-      to: ["contacto@vxaagency.com"],
+      to: ["roccodagesilao@gmail.com"],
       replyTo: replyToEmail,
       subject: `New Agency Audit Request – ${payload.agency_name}`,
       html: buildEmailHtml(payload),

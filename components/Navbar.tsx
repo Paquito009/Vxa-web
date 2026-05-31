@@ -57,7 +57,7 @@ export default function Navbar() {
           className="rounded-md opacity-100 transition-opacity duration-150 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00E5A0]"
           aria-label="VXA — back to top"
         >
-          <Logo height={40} priority />
+          <Logo height={28} priority />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">

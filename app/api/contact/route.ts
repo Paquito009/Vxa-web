@@ -4,7 +4,7 @@ import { apiError, apiSuccess, rateLimitedResponse } from "@/lib/api";
 const REQUIRED_FIELDS = [
   "agency_name",
   "contact_name",
-  "whatsapp",
+  "email",
   "agents",
   "leads_per_week",
 ] as const;
@@ -20,7 +20,7 @@ function escapeHtml(value: string): string {
 function buildEmailHtml(data: {
   agency_name: string;
   contact_name: string;
-  whatsapp: string;
+  email: string;
   agents: string;
   leads_per_week: string;
   challenges: string[];
@@ -36,7 +36,7 @@ function buildEmailHtml(data: {
       <table style="width: 100%; border-collapse: collapse;">
         <tr><td style="padding: 8px 0; font-weight: 600;">Agency name</td><td style="padding: 8px 0;">${escapeHtml(data.agency_name)}</td></tr>
         <tr><td style="padding: 8px 0; font-weight: 600;">Contact name</td><td style="padding: 8px 0;">${escapeHtml(data.contact_name)}</td></tr>
-        <tr><td style="padding: 8px 0; font-weight: 600;">WhatsApp</td><td style="padding: 8px 0;">${escapeHtml(data.whatsapp)}</td></tr>
+        <tr><td style="padding: 8px 0; font-weight: 600;">Email</td><td style="padding: 8px 0;">${escapeHtml(data.email)}</td></tr>
         <tr><td style="padding: 8px 0; font-weight: 600;">Agents</td><td style="padding: 8px 0;">${escapeHtml(data.agents)}</td></tr>
         <tr><td style="padding: 8px 0; font-weight: 600;">Leads per week</td><td style="padding: 8px 0;">${escapeHtml(data.leads_per_week)}</td></tr>
       </table>
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     const payload = {
       agency_name: String(body.agency_name).trim(),
       contact_name: String(body.contact_name).trim(),
-      whatsapp: String(body.whatsapp).trim(),
+      email: String(body.email).trim(),
       agents: String(body.agents).trim(),
       leads_per_week: String(body.leads_per_week).trim(),
       challenges: challenges.map((c: unknown) => String(c).trim()).filter(Boolean),

@@ -26,12 +26,12 @@ export default function Logo({
   return (
     <div className={`flex shrink-0 items-center gap-2 ${className}`}>
       {imgError ? (
-        <div
-          className="flex items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary font-bold text-white"
-          style={{ width: height, height, fontSize: height * 0.35 }}
+        <span
+          className="font-sans font-semibold text-white"
+          style={{ fontSize: height * 0.7 }}
         >
-          V
-        </div>
+          VXA
+        </span>
       ) : (
         <Image
           src={LOGO_SRC}
@@ -39,8 +39,9 @@ export default function Logo({
           width={width}
           height={height}
           priority={priority}
-          className="h-8 w-auto max-w-[min(100%,10rem)] object-contain sm:h-10"
-          sizes="(max-width: 640px) 32px, 40px"
+          className="w-auto object-contain"
+          style={{ height }}
+          sizes="(max-width: 640px) 28px, 28px"
           onError={() => setImgError(true)}
         />
       )}

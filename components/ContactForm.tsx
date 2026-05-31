@@ -19,7 +19,7 @@ export default function ContactForm() {
   const [form, setForm] = useState({
     agencyName: "",
     contactName: "",
-    whatsapp: "",
+    email: "",
     agents: "",
     leadsPerWeek: "",
     challenges: [] as string[],
@@ -49,7 +49,7 @@ export default function ContactForm() {
         body: JSON.stringify({
           agency_name: form.agencyName,
           contact_name: form.contactName,
-          whatsapp: form.whatsapp,
+          email: form.email,
           agents: form.agents,
           leads_per_week: form.leadsPerWeek,
           challenges: form.challenges,
@@ -142,15 +142,15 @@ export default function ContactForm() {
 
             <div>
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-text-muted">
-                WhatsApp number
+                Email address
               </label>
               <input
                 required
-                type="tel"
-                placeholder="+27 XX XXX XXXX"
-                value={form.whatsapp}
+                type="email"
+                placeholder="jon@homesoldproperties.co.za"
+                value={form.email}
                 onChange={(e) =>
-                  setForm((p) => ({ ...p, whatsapp: e.target.value }))
+                  setForm((p) => ({ ...p, email: e.target.value }))
                 }
                 className="w-full rounded-lg border border-[var(--border-light)] bg-bg-primary px-4 py-2.5 text-sm text-text-primary placeholder-text-muted outline-none focus:border-accent-primary/50"
               />

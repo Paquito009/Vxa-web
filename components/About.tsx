@@ -65,7 +65,7 @@ export default function About() {
                 className="absolute inset-0 opacity-40"
                 style={{
                   background:
-                    "radial-gradient(circle at 30% 50%, rgba(108,99,255,0.3) 0%, transparent 60%), radial-gradient(circle at 70% 50%, rgba(0,212,255,0.2) 0%, transparent 60%)",
+                    "radial-gradient(circle at 30% 50%, rgba(0,229,160,0.12) 0%, transparent 60%), radial-gradient(circle at 70% 50%, rgba(0,229,160,0.06) 0%, transparent 60%)",
                 }}
               />
               <div className="relative text-center">

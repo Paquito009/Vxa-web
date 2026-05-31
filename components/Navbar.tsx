@@ -15,10 +15,24 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10);
+
+      let current = "";
+      navLinks.forEach(({ href }) => {
+        const section = document.getElementById(href);
+        if (section) {
+          const { top } = section.getBoundingClientRect();
+          if (top <= 120) current = href;
+        }
+      });
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -29,10 +43,8 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-bg-primary/95 backdrop-blur-md border-b border-[var(--border-light)] shadow-[0_4px_24px_rgba(0,0,0,0.25)]"
-          : "bg-bg-primary/80 backdrop-blur-sm"
+      className={`sticky top-0 z-50 border-b border-white/[0.06] backdrop-blur-md transition-shadow duration-200 ${
+        scrolled ? "bg-black/80 shadow-[0_4px_24px_rgba(0,0,0,0.4)]" : "bg-black/70"
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-3.5">
@@ -42,7 +54,7 @@ export default function Navbar() {
             e.preventDefault();
             handleNav("hero");
           }}
-          className="flex items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+          className="rounded-md opacity-100 transition-opacity duration-150 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00E5A0]"
           aria-label="VXA — back to top"
         >
           <Logo height={40} priority />
@@ -53,7 +65,11 @@ export default function Navbar() {
             <button
               key={link.label}
               onClick={() => handleNav(link.href)}
-              className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+              className={`text-sm font-medium transition-opacity duration-150 ${
+                activeSection === link.href
+                  ? "text-[#00E5A0] opacity-100"
+                  : "text-[#EFEFEF] opacity-60 hover:opacity-100"
+              }`}
             >
               {link.label}
             </button>
@@ -67,7 +83,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="md:hidden text-text-primary"
+          className="text-[#EFEFEF] opacity-70 transition-opacity duration-150 hover:opacity-100 md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -76,13 +92,17 @@ export default function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-[var(--border-light)] bg-bg-primary/98 px-4 py-4 md:hidden">
+        <div className="border-t border-white/[0.06] bg-black/95 px-4 py-4 md:hidden">
           <div className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <button
                 key={link.label}
                 onClick={() => handleNav(link.href)}
-                className="text-left text-text-secondary hover:text-text-primary"
+                className={`text-left text-sm transition-opacity duration-150 ${
+                  activeSection === link.href
+                    ? "text-[#00E5A0] opacity-100"
+                    : "text-[#EFEFEF] opacity-60 hover:opacity-100"
+                }`}
               >
                 {link.label}
               </button>

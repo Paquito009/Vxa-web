@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import FadeIn from "./FadeIn";
 import { scrollToSection } from "@/lib/scroll";
 import {
@@ -9,13 +10,14 @@ import {
   Star,
   BarChart3,
   RefreshCw,
+  Check,
 } from "lucide-react";
 
 const services = [
   {
     id: "webcraft",
     icon: Globe,
-    name: "01 🌐 WebCraft",
+    name: "WebCraft",
     tagline:
       "Your professional online presence, built from scratch. HTML, CSS and JavaScript — no templates, no limitations.",
     problem:
@@ -36,7 +38,7 @@ const services = [
     icon: MessageCircle,
     tag: "Most Popular",
     featured: true,
-    name: "02 LeadFlow 24/7",
+    name: "LeadFlow 24/7",
     tagline: "No lead goes unanswered. Ever.",
     problem:
       "You lose 40–60% of your leads because nobody responds on weekends or after 6pm. By Monday morning, they've already signed with someone else.",
@@ -54,7 +56,7 @@ const services = [
   {
     id: "contentai",
     icon: PenLine,
-    name: "03 ContentAI",
+    name: "ContentAI",
     tagline: "One form. 30 seconds. Property24 + Instagram + WhatsApp — done.",
     problem:
       "Writing descriptions for Property24, Instagram captions, and WhatsApp messages for every new listing takes 2–3 hours per property. Multiply that by 10 listings a month.",
@@ -72,7 +74,7 @@ const services = [
   {
     id: "reviewbot",
     icon: Star,
-    name: "04 ReviewBot",
+    name: "ReviewBot",
     tagline: "More 5-star reviews. Zero manual effort.",
     problem:
       "After every successful deal, your agents forget to ask for a Google review. Negative reviews appear with no response. Your online reputation runs itself — badly.",
@@ -90,7 +92,7 @@ const services = [
   {
     id: "reportai",
     icon: BarChart3,
-    name: "05 ReportAI",
+    name: "ReportAI",
     tagline: "Every Monday at 8am, your business in your WhatsApp.",
     problem:
       "You don't know in real time how many leads came in, which agent followed up, or how many viewings were booked. You're running your agency blind.",
@@ -108,7 +110,7 @@ const services = [
   {
     id: "nurtureflow",
     icon: RefreshCw,
-    name: "06 NurtureFlow",
+    name: "NurtureFlow",
     tagline: "Reactivate your dead leads automatically.",
     problem:
       "Every agency has hundreds of contacts who said \"not right now\" 6 months ago. They're never followed up. That's your biggest untapped revenue source.",
@@ -126,110 +128,172 @@ const services = [
 ];
 
 export default function Services() {
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [visibleCards, setVisibleCards] = useState<boolean[]>(
+    new Array(services.length).fill(false)
+  );
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReduced) {
+      setVisibleCards(new Array(services.length).fill(true));
+      return;
+    }
+
+    const observers: IntersectionObserver[] = [];
+
+    cardRefs.current.forEach((el, index) => {
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              setVisibleCards((prev) => {
+                const next = [...prev];
+                next[index] = true;
+                return next;
+              });
+            }, index * 80);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+      );
+
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
   return (
-    <section id="services" className="bg-bg-secondary px-4 py-24 md:px-8">
+    <section id="services" className="px-4 py-24 md:px-8">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
-          <div className="mb-16 text-center">
+          <div className="mb-16">
             <h2 className="section-title mb-4">
               The 6 Systems That Run Your Agency on Autopilot
             </h2>
-            <p className="mx-auto max-w-2xl text-text-secondary">
-              Each one solves a specific problem that&apos;s costing you time and
-              money right now.
+            <p className="max-w-[65ch] text-base leading-relaxed text-[#5A5A5A]">
+              Each one solves a specific problem that&apos;s costing you time
+              and money right now.
             </p>
           </div>
         </FadeIn>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service, index) => {
             const Icon = service.icon;
+            const numLabel = `0${index + 1}`;
+
             return (
-              <FadeIn
+              <div
                 key={service.id}
-                delay={index * 80}
-                className={service.featured ? "md:col-span-2" : ""}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                className={`card relative flex h-full flex-col overflow-hidden p-6 hover:scale-[1.015] ${
+                  service.featured ? "md:col-span-2 lg:col-span-1" : ""
+                }`}
+                style={{
+                  opacity: visibleCards[index] ? 1 : 0,
+                  transform: `translateY(${visibleCards[index] ? 0 : 20}px)`,
+                  transition: `opacity 350ms cubic-bezier(0.23,1,0.32,1), transform 350ms cubic-bezier(0.23,1,0.32,1)`,
+                }}
               >
-                <div
-                  className={`card h-full flex flex-col ${
-                    service.featured
-                      ? "border-accent-primary/50 ring-1 ring-accent-primary/20"
-                      : ""
-                  }`}
+                {/* Faded index number */}
+                <span
+                  className="pointer-events-none absolute right-3 top-0 select-none font-bold leading-none text-white/[0.03]"
+                  style={{ fontSize: "120px" }}
+                  aria-hidden
                 >
-                  <div className="mb-4 flex items-start justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-primary/15 text-accent-primary">
-                      <Icon size={24} />
-                    </div>
-                    {service.tag && (
-                      <span className="rounded-full bg-accent-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-accent-primary">
-                        {service.tag}
-                      </span>
-                    )}
-                  </div>
+                  {numLabel}
+                </span>
 
-                  <h3 className="mb-1 text-xl font-bold text-text-primary">
-                    {service.name}
-                  </h3>
-                  <p className="mb-4 text-sm font-medium text-accent-secondary">
-                    {service.tagline}
-                  </p>
-
-                  <p className="mb-4 text-sm leading-relaxed text-text-secondary">
-                    {service.problem}
-                  </p>
-
-                  <ul className="mb-6 flex-1 space-y-2">
-                    {service.includes.map((item) => (
-                      <li
-                        key={item}
-                        className="flex gap-2 text-sm text-text-secondary"
-                      >
-                        <span className="mt-1 text-accent-primary">✓</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mb-4 space-y-1 border-t border-[var(--border-light)] pt-4 text-sm">
-                    <p className="text-text-muted">
-                      Setup:{" "}
-                      <span className="text-text-primary">{service.setup}</span>
-                    </p>
-                    <p className="text-text-muted">
-                      Monthly:{" "}
-                      <span className="text-text-primary">{service.monthly}</span>
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={service.ctaAction}
-                    className="btn-secondary w-full text-sm"
-                  >
-                    {service.cta}
-                  </button>
+                {/* Icon + tag row */}
+                <div className="mb-5 flex items-start justify-between">
+                  <Icon
+                    size={22}
+                    strokeWidth={1.5}
+                    className="text-[#00E5A0]"
+                  />
+                  {service.tag && (
+                    <span className="rounded-full bg-[#00E5A0]/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#00E5A0]">
+                      {service.tag}
+                    </span>
+                  )}
                 </div>
-              </FadeIn>
+
+                <h3 className="mb-1 text-xl font-bold text-[#EFEFEF]">
+                  {service.name}
+                </h3>
+                <p className="mb-4 text-sm font-medium text-[#00E5A0]">
+                  {service.tagline}
+                </p>
+
+                <p className="mb-5 text-sm leading-relaxed text-[#5A5A5A]">
+                  {service.problem}
+                </p>
+
+                <ul className="mb-6 flex-1 space-y-2.5">
+                  {service.includes.map((item) => (
+                    <li key={item} className="flex gap-2.5 text-sm text-[#5A5A5A]">
+                      <Check
+                        size={13}
+                        strokeWidth={2}
+                        className="mt-0.5 shrink-0 text-[#00E5A0]"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mb-5 space-y-1 border-t border-[#1C1C1C] pt-4 text-sm">
+                  <p className="text-[#3A3A3A]">
+                    Setup:{" "}
+                    <span className="text-[#EFEFEF]">{service.setup}</span>
+                  </p>
+                  <p className="text-[#3A3A3A]">
+                    Monthly:{" "}
+                    <span className="text-[#EFEFEF]">{service.monthly}</span>
+                  </p>
+                </div>
+
+                <button
+                  onClick={service.ctaAction}
+                  className="btn-secondary w-full text-sm"
+                >
+                  {service.cta}
+                </button>
+              </div>
             );
           })}
         </div>
 
         <FadeIn delay={200}>
-          <div id="pricing" className="card mt-8 scroll-mt-28 text-center md:mt-12">
-            <h3 className="mb-2 text-2xl font-bold text-text-primary">
+          <div
+            id="pricing"
+            className="card mt-8 scroll-mt-28 p-8 text-center md:mt-12"
+          >
+            <h3 className="mb-2 text-2xl font-bold text-[#EFEFEF]">
               All 6 Systems — Full Automation Package
             </h3>
-            <p className="mb-2 text-3xl font-bold gradient-text">
+            <p className="mb-2 font-mono text-3xl font-bold text-[#00E5A0]">
               $1,400 – $2,300 USD/month
             </p>
-            <p className="mb-6 text-text-secondary">
+            <p className="mb-6 text-[#5A5A5A]">
               Everything above. One agency. Fully automated.
             </p>
             <button
               onClick={() => scrollToSection("contact")}
               className="btn-primary"
             >
-              Get the Full Package →
+              Get the Full Package &rarr;
             </button>
           </div>
         </FadeIn>

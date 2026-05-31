@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
-import Logo from "./Logo";
 
 const navLinks = [
   { label: "Services", href: "services" },
@@ -49,15 +48,11 @@ export default function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8 md:py-3.5">
         <a
-          href="#hero"
-          onClick={(e) => {
-            e.preventDefault();
-            handleNav("hero");
-          }}
+          href="/"
           className="rounded-md opacity-100 transition-opacity duration-150 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00E5A0]"
-          aria-label="VXA — back to top"
+          aria-label="VXA — home"
         >
-          <Logo height={28} priority />
+          <span className="font-geist text-xl font-bold tracking-wider text-white">VXA</span>
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
